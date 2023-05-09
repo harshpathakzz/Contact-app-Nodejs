@@ -16,7 +16,12 @@ export const getContacts = asyncHandler(async (req, res) => {
 //* @access Public
 
 export const getContact = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: `Get a contact with id ${req.params.id}` });
+  const contact = await Contact.findById(req.params.id);
+  if (!contact) {
+    res.status(404);
+    throw new Error("Contact not found");
+  }
+  res.status(200).json({ contact });
 });
 
 //* @desc   Create a contact
@@ -43,9 +48,20 @@ export const createContact = asyncHandler(async (req, res) => {
 //* @access Public
 
 export const updateContact = asyncHandler(async (req, res) => {
-  res
-    .status(200)
-    .json({ message: `Update a contact with id ${req.params.id}` });
+  const contact = await Contact.findById(req.params.id);
+  if (!contact) {
+    res.status(404);
+    throw new Error("Contact not found");
+  }
+  const updatedContact = await Contact.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  res.status(200).json({ contact });
 });
 
 //* @desc   Delete a contact
@@ -53,7 +69,21 @@ export const updateContact = asyncHandler(async (req, res) => {
 //* @access Public
 
 export const deleteContact = asyncHandler(async (req, res) => {
-  res
-    .status(200)
-    .json({ message: `Delete a contact with id ${req.params.id}` });
+  const contact = await Contact.findById(req.params.id);
+  if (!contact) {
+    res.status(404);
+    throw new Error("Contact not found");
+  }
+
+  await Contact.deleteOne({ _id: req.params.id });
+
+  res.status(200).json({
+    message: "Contact deleted",
+    deletedContact: {
+      _id: contact._id,
+      name: contact.name,
+      email: contact.email,
+      phone: contact.phone,
+    },
+  });
 });
