@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const userSchema = mongoose.Schema(
   {
-    name: {
+    username: {
       type: String,
       required: true,
       trim: true,
@@ -18,8 +18,6 @@ const userSchema = mongoose.Schema(
     password: {
       type: String,
       required: true,
-      trim: true,
-      lowercase: true,
     },
   },
   {
