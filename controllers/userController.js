@@ -67,7 +67,7 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new Error("Invalid credentials");
   }
   //Generate token
-  const token = jwt.sign(
+  const accessToken = jwt.sign(
     {
       user: {
         _id: user._id,
@@ -81,14 +81,14 @@ const loginUser = asyncHandler(async (req, res) => {
     }
   );
 
-  res.json({ token });
+  res.json({ accessToken });
 });
 
 //@desc Current user info
 //@route POST /api/users/current
 //@access private
 const currentUser = asyncHandler(async (req, res) => {
-  res.json({ message: "Current user info" });
+  res.json({ user: req.user });
 });
 
 export { registerUser, loginUser, currentUser };
